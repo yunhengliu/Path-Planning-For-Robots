@@ -1,0 +1,108 @@
+import turtle
+
+OBSTACLE_COLOR = 'blue'
+DOT_COLOR1 = 'red'
+DOT_COLOR2 = 'black'
+PATH_COLOR = 'green'
+RADIUS = 3
+
+class DrawingTools:
+
+    def __init__(self, map_file):
+        world_size, start_pos, goal_pos, obstacles = self.read_map(map_file)
+        turtle.setup(world_size[0]+100, world_size[1]+100)
+        turtle.setworldcoordinates(0, 0, world_size[0], world_size[1])
+        screen = turtle.Screen()
+        screen.title("Path Planning Demo")
+        t = turtle.Turtle()
+        t.speed(0)
+        t.hideturtle()
+
+        self.world_size = world_size
+        self.start_pos = start_pos
+        self.goal_pos = goal_pos
+        self.obstacles = obstacles
+        self.turtle = t
+        self.screen = screen
+
+    def read_map(self, filename):
+        
+        f = open(filename)
+
+        # read map data
+        line1 = f.readline().split(' ')
+        world_size = (int(line1[0]), int(line1[1]))
+        line2 = f.readline().split(' ')
+        start_pos = (float(line2[0]), float(line2[1]))
+        line3 = f.readline().split(' ')
+        goal_pos = (float(line3[0]), float(line3[1]))
+
+        # read obstacle data
+        num_obstacles = int(f.readline())
+        obstacles = []
+        for i in range(num_obstacles):
+            num_vertices = int(f.readline())
+            vertices = []
+            for j in range(num_vertices):
+                line = f.readline().split(' ')
+                vertices.append((float(line[0]), float(line[1])))
+            obstacles.append(vertices)
+
+        return world_size, start_pos, goal_pos, obstacles  
+
+    def draw_map(self):
+        self.draw_boundaries(OBSTACLE_COLOR)
+        for obstacle in self.obstacles:
+            self.draw_polygon(obstacle, OBSTACLE_COLOR)
+        self.draw_point(self.start_pos, DOT_COLOR1)
+        self.draw_point(self.goal_pos, DOT_COLOR2)
+        self.screen.exitonclick()
+
+    def draw_boundaries(self, color):
+        x, y = self.world_size[0], self.world_size[1]
+        self.turtle.pencolor(color)
+        self.turtle.penup()
+        self.turtle.goto(0, 0)
+        self.turtle.pendown()
+        self.turtle.goto(x, 0)
+        self.turtle.goto(x, y)
+        self.turtle.goto(0, y)
+        self.turtle.goto(0, 0)
+        self.turtle.penup()
+
+    def draw_polygon(self, vertices, color):
+        self.turtle.pencolor(color)
+        self.turtle.penup()
+        self.turtle.goto(vertices[-1][0], vertices[-1][1])
+        self.turtle.pendown()
+        for i in range(len(vertices)):
+            self.turtle.goto(vertices[i][0], vertices[i][1])
+        self.turtle.penup()
+
+    def draw_point(self, point, color):
+        self.turtle.penup()
+        self.turtle.goto(point)
+        self.turtle.dot(RADIUS, color)
+        self.turtle.penup()
+
+    def draw_nodes(self, nodes, color):
+        for n in nodes:
+            self.draw_point(n, color)
+
+    def draw_edges(self, edges, color):
+        self.turtle.pencolor(color)
+        for edge in edges:
+            self.turtle.penup()
+            self.turtle.goto(edge[0])
+            self.turtle.pendown()
+            self.turtle.goto(edge[1])
+            self.turtle.penup()
+
+    def draw_path(tt, path, color):
+        self.turtle.pencolor(color)
+        self.turtle.penup()
+        self.turtle.goto(path[0])
+        self.turtle.pendown()
+        for i in range(1, len(path)):    
+            self.turtle.goto(path[i])
+        self.turtle.penup()
