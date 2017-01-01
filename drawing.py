@@ -9,25 +9,8 @@ RADIUS = 3
 class DrawingTools:
 
     def __init__(self, map_file):
-        world_size, start_pos, goal_pos, obstacles = self.read_map(map_file)
-        turtle.setup(world_size[0]+100, world_size[1]+100)
-        turtle.setworldcoordinates(0, 0, world_size[0], world_size[1])
-        screen = turtle.Screen()
-        screen.title("Path Planning Demo")
-        t = turtle.Turtle()
-        t.speed(0)
-        t.hideturtle()
-
-        self.world_size = world_size
-        self.start_pos = start_pos
-        self.goal_pos = goal_pos
-        self.obstacles = obstacles
-        self.turtle = t
-        self.screen = screen
-
-    def read_map(self, filename):
         
-        f = open(filename)
+        f = open(map_file)
 
         # read map data
         line1 = f.readline().split(' ')
@@ -48,7 +31,24 @@ class DrawingTools:
                 vertices.append((float(line[0]), float(line[1])))
             obstacles.append(vertices)
 
-        return world_size, start_pos, goal_pos, obstacles  
+        # set up turtle
+        turtle.setup(world_size[0]+100, world_size[1]+100)
+        turtle.setworldcoordinates(0, 0, world_size[0], world_size[1])
+        screen = turtle.Screen()
+        screen.title("Path Planning Demo")
+        t = turtle.Turtle()
+        t.speed(0)
+        t.hideturtle()
+
+        self.world_size = world_size
+        self.start_pos = start_pos
+        self.goal_pos = goal_pos
+        self.obstacles = obstacles
+        self.turtle = t
+        self.screen = screen
+
+    def get_map_info(self):
+        return self.world_size, self.start_pos, self.goal_pos, self.obstacles
 
     def draw_map(self):
         self.draw_boundaries(OBSTACLE_COLOR)
@@ -56,7 +56,6 @@ class DrawingTools:
             self.draw_polygon(obstacle, OBSTACLE_COLOR)
         self.draw_point(self.start_pos, DOT_COLOR1)
         self.draw_point(self.goal_pos, DOT_COLOR2)
-        self.screen.exitonclick()
 
     def draw_boundaries(self, color):
         x, y = self.world_size[0], self.world_size[1]
@@ -98,7 +97,7 @@ class DrawingTools:
             self.turtle.goto(edge[1])
             self.turtle.penup()
 
-    def draw_path(tt, path, color):
+    def draw_path(self, path, color):
         self.turtle.pencolor(color)
         self.turtle.penup()
         self.turtle.goto(path[0])
@@ -106,3 +105,6 @@ class DrawingTools:
         for i in range(1, len(path)):    
             self.turtle.goto(path[i])
         self.turtle.penup()
+
+    def finished_drawing(self):
+        self.screen.exitonclick()
