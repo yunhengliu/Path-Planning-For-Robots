@@ -1,9 +1,10 @@
 import sys, random, math
 from drawing import *
 from common import *
+from graph_search import *
 
-MAX_SAMPLE = 30
-CONNECT_STEP = 10
+MAX_SAMPLE = 50
+CONNECT_STEP = 30
 
 class RRT:
 
@@ -99,6 +100,7 @@ class RRT:
         new_node2 = self.goal
         
         for i in range(self.num_iter):
+            print 'Iteration: ' + str(i)
             
             stuck1, stuck2 = False, False
             bias = (i != 0) and (i % self.bias_step == 0)
@@ -159,9 +161,14 @@ def main():
     world_size, start, goal, obstacles = dts.get_map_info()
     rrt_planner = RRT(world_size, start, goal, obstacles, num_iter, step_size, bias_step, eps)
     tree1, tree2, edges = rrt_planner.generate_trees()
+    g = Graph(edges)
+    path, cost = g.dijkstra(start, goal)
+    print 'Cost: ' + str(cost)
+
     dts.draw_map()
     dts.draw_nodes(tree1, DOT_COLOR1)
     dts.draw_nodes(tree2, DOT_COLOR2)
+    dts.draw_path(path, PATH_COLOR)
     dts.finished_drawing()
 
 if __name__ == "__main__": 
