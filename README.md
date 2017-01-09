@@ -9,7 +9,7 @@ Usage: python rrt.py map_file num_iter step_size bias_step eps
 -eps: minimum seperation between tree nodes
 
 Example: python rrt.py maps/map1.txt 5000 3 2 2
-![alt tag](/img/rrt.png)
+![alt tag](/img/rrt.png =300x300)
 
 2. [Visibility graph](https://en.wikipedia.org/wiki/Visibility_graph)
 
@@ -21,4 +21,4 @@ Usage: python vgraph.py map_file robot_width robot_length ref_idx
 (0=bottom left, 1=bottom right, 2=top right, 3=top left)
 
 Example: python vgraph.py maps/map3.txt 10 15 0
-![alt tag](/img/rrt.png)
+![alt tag](/img/vgraph.png =300x300)
