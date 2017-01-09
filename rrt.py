@@ -4,7 +4,7 @@ from common import *
 from graph_search import *
 
 MAX_SAMPLE = 50
-CONNECT_STEP = 30
+CONNECT_STEP = 10
 
 class RRT:
 
@@ -81,15 +81,12 @@ class RRT:
             return new_node, new_edge
         return None, None
 
-    def get_min_distance(self, tree1, tree2):
-        min_dist = get_distance(tree1[0], tree2[0])
-        new_edge = None
-        for n1 in tree1:
-            for n2 in tree2:
-                if not self.intersect_obstacle_edge((n1, n2)) and get_distance(n1, n2) < min_dist:
-                    new_edge = (n1, n2)
-                    min_dist = get_distance(n1, n2)
-        return min_dist, new_edge
+    def connect(self, tree1, tree2):
+        for n1 in tree1[len(tree1)-CONNECT_STEP*2:]:
+            for n2 in tree2[len(tree2)-CONNECT_STEP*2:]:
+                if not self.intersect_obstacle_edge((n1, n2)) and get_distance(n1, n2) <= self.step_size:
+                    return (n1, n2)
+        return None
 
     def generate_trees(self):
 
@@ -132,12 +129,12 @@ class RRT:
             # cannot grow either tree
             if stuck1 and stuck2:
                 print "Stuck..."
-                break
+                return tree1, tree2, None
 
             # connect two trees
             if (i != 0) and (i % CONNECT_STEP == 0):
-                dist, new_edge = self.get_min_distance(tree1, tree2)
-                if new_edge != None and dist < self.step_size:
+                new_edge = self.connect(tree1, tree2)
+                if new_edge != None:
                     edges.append(new_edge)
                     print "trees connnected..."
                     break
@@ -161,14 +158,18 @@ def main():
     world_size, start, goal, obstacles = dts.get_map_info()
     rrt_planner = RRT(world_size, start, goal, obstacles, num_iter, step_size, bias_step, eps)
     tree1, tree2, edges = rrt_planner.generate_trees()
-    g = Graph(edges)
-    path, cost = g.dijkstra(start, goal)
-    print 'Cost: ' + str(cost)
+    if edges:
+        g = Graph(edges)
+        path, cost = g.dijkstra(start, goal)
+        print 'Cost: ' + str(cost)
 
     dts.draw_map()
-    dts.draw_nodes(tree1, DOT_COLOR1)
-    dts.draw_nodes(tree2, DOT_COLOR2)
-    dts.draw_path(path, PATH_COLOR)
+    dts.draw_point(start, RED)
+    dts.draw_point(goal, BLACK)
+    dts.draw_nodes(tree1, RED)
+    dts.draw_nodes(tree2, BLACK)
+    if edges:
+        dts.draw_path(path, GREEN, PATH_WIDTH)
     dts.finished_drawing()
 
 if __name__ == "__main__": 

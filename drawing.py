@@ -1,10 +1,12 @@
 import turtle
 
-OBSTACLE_COLOR = 'blue'
-DOT_COLOR1 = 'red'
-DOT_COLOR2 = 'black'
-PATH_COLOR = 'green'
+RED = 'red'
+GREEN = 'green'
+BLUE = 'blue'
+BLACK = 'black'
+PURPLE = 'purple'
 RADIUS = 3
+PATH_WIDTH = 2
 
 class DrawingTools:
 
@@ -51,11 +53,8 @@ class DrawingTools:
         return self.world_size, self.start_pos, self.goal_pos, self.obstacles
 
     def draw_map(self):
-        self.draw_boundaries(OBSTACLE_COLOR)
-        for obstacle in self.obstacles:
-            self.draw_polygon(obstacle, OBSTACLE_COLOR)
-        self.draw_point(self.start_pos, DOT_COLOR1)
-        self.draw_point(self.goal_pos, DOT_COLOR2)
+        self.draw_boundaries(BLUE)
+        self.draw_obstacles(self.obstacles, BLUE)
 
     def draw_boundaries(self, color):
         x, y = self.world_size[0], self.world_size[1]
@@ -68,6 +67,10 @@ class DrawingTools:
         self.turtle.goto(0, y)
         self.turtle.goto(0, 0)
         self.turtle.penup()
+
+    def draw_obstacles(self, obstacles, color):
+        for obstacle in obstacles:
+            self.draw_polygon(obstacle, color)
 
     def draw_polygon(self, vertices, color):
         self.turtle.pencolor(color)
@@ -97,8 +100,9 @@ class DrawingTools:
             self.turtle.goto(edge[1])
             self.turtle.penup()
 
-    def draw_path(self, path, color):
+    def draw_path(self, path, color, width=None):
         self.turtle.pencolor(color)
+        self.turtle.width(width)
         self.turtle.penup()
         self.turtle.goto(path[0])
         self.turtle.pendown()

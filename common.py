@@ -6,6 +6,12 @@ def get_distance(n1, n2):
 def ccw(a, b, c):
     return (c[1] - a[1]) * (b[0]-a[0]) > (b[1] - a[1]) * (c[0] - a[0])
 
+def get_orientation(v1, v2):
+    dx = float(v2[0] - v1[0])
+    dy = float(v2[1] - v1[1])
+    if dx == 0: return 90
+    return math.degrees(math.atan(dy/dx))
+
 def orientation(a, b, c, d):
     return ccw(a, c, d) != ccw(b, c, d) and ccw(a, b, c) != ccw(a, b, d)
 
