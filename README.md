@@ -1,6 +1,6 @@
-# Path Planning Algorithms
+# Path Planning Algorithms for Robotics
 
-## [**Bidirectional Rapidly-exploring Random Trees:**](https://en.wikipedia.org/wiki/Rapidly-exploring_random_tree)
+### [**Bidirectional Rapidly-exploring Random Trees:**](https://en.wikipedia.org/wiki/Rapidly-exploring_random_tree)
 
 1. Usage: python rrt.py map_file num_iter step_size bias_step eps
   * map_file: format given below
@@ -12,7 +12,7 @@
 <img src="/img/rrt.png" height="500" width="500">
 
 
-## [**Visibility Graph:**](https://en.wikipedia.org/wiki/Visibility_graph)
+### [**Visibility Graph:**](https://en.wikipedia.org/wiki/Visibility_graph)
 
 1. Usage: python vgraph.py map_file robot_width robot_length ref_idx
   * map_file: format given below
@@ -24,7 +24,7 @@
 2. Example: python vgraph.py maps/map3.txt 10 15 0
 <img src="/img/vgraph.png" height="500" width="500">
 
-## Map Format:
+### Map Format:
   * First line: size of the entire rectangular area of interest
   * Second line: start position
   * Third line: goal position
